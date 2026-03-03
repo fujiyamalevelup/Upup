@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Luxury Japan 2026 | Concierge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { platinum: '#F5F5F7', gold: '#D4AF37', champagne: '#F7E7CE', luxury: '#1C1C1C' },
+                    fontFamily: { sans: ['Noto Sans TC', 'sans-serif'], serif: ['Playfair Display', 'serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #FDFCFB; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
+        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(212, 175, 55, 0.1); }
+        .gold-gradient { background: linear-gradient(135deg, #D4AF37 0%, #F7E7CE 50%, #C5A028 100%); }
+        .tab-active { color: #D4AF37 !important; border-top: 3px solid #D4AF37; }
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+        ::-webkit-scrollbar { display: none; }
+        img { object-fit: cover; }
+        .flight-card { background: linear-gradient(90deg, #1C1C1C 0%, #333 100%); border-left: 4px solid #D4AF37; }
+    </style>
+</head>
+<body class="font-sans text-luxury">
+
+    <header class="sticky top-0 z-[60] bg-white/95 backdrop-blur-md border-b border-champagne px-6 py-4 flex justify-between items-center shadow-sm">
+        <div>
+            <h1 class="font-serif italic text-2xl font-bold tracking-widest text-gold">Japan 2026</h1>
+            <p class="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-bold">Personal Concierge v3.5 Full</p>
+        </div>
+        <div class="text-right">
+            <span class="text-xs font-bold block">03/08 - 03/14</span>
+            <span class="text-[10px] text-gold uppercase font-bold italic">Tigerair IT200/203</span>
+        </div>
+    </header>
+
+    <main id="app-content" class="relative z-10 pb-40 px-4 pt-6 min-h-screen"></main>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-around items-center safe-bottom z-[100] shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
+        <button onclick="renderPage('plan')" class="nav-item flex flex-col items-center py-4 px-2 w-full text-gray-400 transition-all">
+            <i class="fa-solid fa-calendar-day text-lg mb-1"></i>
+            <span class="text-[10px] font-bold">PLAN</span>
+        </button>
+        <button onclick="renderPage('guide')" class="nav-item flex flex-col items-center py-4 px-2 w-full text-gray-400 transition-all">
+            <i class="fa-solid fa-map-location-dot text-lg mb-1"></i>
+            <span class="text-[10px] font-bold">GUIDE</span>
+        </button>
+        <button onclick="renderPage('wallet')" class="nav-item flex flex-col items-center py-4 px-2 w-full text-gray-400 transition-all">
+            <i class="fa-solid fa-wallet text-lg mb-1"></i>
+            <span class="text-[10px] font-bold">WALLET</span>
+        </button>
+        <button onclick="renderPage('lists')" class="nav-item flex flex-col items-center py-4 px-2 w-full text-gray-400 transition-all">
+            <i class="fa-solid fa-list-check text-lg mb-1"></i>
+            <span class="text-[10px] font-bold">LISTS</span>
+        </button>
+        <button onclick="renderPage('info')" class="nav-item flex flex-col items-center py-4 px-2 w-full text-gray-400 transition-all">
+            <i class="fa-solid fa-circle-info text-lg mb-1"></i>
+            <span class="text-[10px] font-bold">INFO</span>
+        </button>
+    </nav>
+
+    <script>
+        // --- DATA STORE ---
+        let JPY_RATE = parseFloat(localStorage.getItem('jpy_rate')) || 0.21;
+        
+        const itinerary = [
+            { day: "Day 1", date: "3/8", title: "抵達 & 河口湖自駕", stay: "Hanz Outdoor Resort", items: [
+                { type: "航班", name: "虎航 IT200 (10:35 抵達)", time: "Arrival", addr: "1-1 Furugome, Narita", isFlight: true },
+                { type: "休憩", name: "海老名服務區 (下行)", time: "Stopover", addr: "5 Chome-2-1 Oyaminami, Ebina" },
+                { type: "休憩", name: "富士川 SA (下行) Starbucks", time: "Coffee", addr: "1348-3 Iwabuchi, Fuji" },
+                { type: "補給", name: "Ogino 河口湖店", time: "Grocery", addr: "545ｰ3 Funatsu, Fujikawaguchiko" },
+                { type: "住宿", name: "Hanz Outdoor Resort", time: "Check-in", addr: "3297-1 Katsuyama, Fujikawaguchiko" }
+            ]},
+            { day: "Day 2", date: "3/9", title: "神玉巡拜 & 天空鳥居", stay: "Hanz Outdoor Resort", items: [
+                { type: "神社", name: "河口淺間神社", time: "40m", addr: "1 Kawaguchi, Fujikawaguchiko", highlight: true },
+                { type: "絕景", name: "天空の鳥居 Tenku no Torii", time: "75m", addr: "1 Kawaguchi, Fujikawaguchiko" },
+                { type: "神社", name: "富士御室淺間神社", time: "30m", addr: "3951 Katsuyama, Fujikawaguchiko" },
+                { type: "神社", name: "冨士山小御嶽神社", time: "30m", addr: "Fuji Subaru Line 5th Station" }
+            ]},
+            { day: "Day 3", date: "3/10", title: "商店街 & 美術館", stay: "Hanz Outdoor Resort", items: [
+                { type: "商圈", name: "河口湖船津商店街", time: "90m", addr: "Funatsu, Fujikawaguchiko" },
+                { type: "美術館", name: "音樂盒之森美術館", time: "90m", addr: "3077-20 Kawaguchi", highlight: true },
+                { type: "咖啡", name: "LAKE BAKE", time: "45m", addr: "2585-85 Oishi, Fujikawaguchiko" }
+            ]},
+            { day: "Day 4", date: "3/11", title: "湖畔藝術日", stay: "時悠悠樂游", items: [
+                { type: "公園", name: "大石公園", time: "45m", addr: "2585 Oishi, Fujikawaguchiko" },
+                { type: "美術館", name: "河口湖美術館", time: "90m", addr: "3170 Kawaguchi, Fujikawaguchiko" },
+                { type: "咖啡", name: "Budoya Kofu Hana Terrace", time: "45m", addr: "1477-1 Oishi, Fujikawaguchiko" },
+                { type: "住宿", name: "時悠悠樂游", time: "Check-in", addr: "186-1 Asakawa, Fujikawaguchiko" }
+            ]},
+            { day: "Day 5", date: "3/12", title: "地底探險 & 公園", stay: "時悠悠樂游", items: [
+                { type: "景觀", name: "河口湖天上山公園", time: "60m", addr: "1163-1 Azagawa, Fujikawaguchiko" },
+                { type: "奇景", name: "富岳風穴", time: "45m", addr: "2068-1 Saiko, Fujikawaguchiko" },
+                { type: "奇景", name: "鳴澤氷穴", time: "60m", addr: "8533 Narusawa, Yamanashi", highlight: true },
+                { type: "名物", name: "FUJIYAMA COOKIE", time: "45m", addr: "1165-1 Azagawa, Fujikawaguchiko" }
+            ]},
+            { day: "Day 6", date: "3/13", title: "淺草下町風情", stay: "APA Hotel Asakusa", items: [
+                { type: "文化", name: "雷門 / 淺草寺 / 仲見世通", time: "120m", addr: "2-3-1 Asakusa, Taito City" },
+                { type: "景點", name: "墨田北齋美術館", time: "60m", addr: "2-7-2 Kamezawa, Sumida" },
+                { type: "地標", name: "東京晴空塔", time: "90m", addr: "1 Chome-1-2 Oshiage, Sumida" },
+                { type: "晚餐", name: "Chinya 壽喜燒", time: "90m", addr: "2-16-1 Hanakawado", highlight: true }
+            ]},
+            { day: "Day 7", date: "3/14", title: "東京車站 & 返程", stay: "Home", items: [
+                { type: "地標", name: "東京車站 (丸之內)", time: "90m", addr: "1 Chome Marunouchi, Chiyoda" },
+                { type: "航班", name: "虎航 IT203 (18:30 起飛)", time: "Return", addr: "1-1 Furugome, Narita", isFlight: true }
+            ]}
+        ];
+
+        // --- CORE NAVIGATION ---
+        function renderPage(page) {
+            const content = document.getElementById('app-content');
+            window.scrollTo(0,0);
+            document.querySelectorAll('.nav-item').forEach((el, idx) => {
+                const pages = ['plan', 'guide', 'wallet', 'lists', 'info'];
+                el.classList.toggle('tab-active', pages[idx] === page);
+            });
+            
+            if(page === 'plan') renderPlan(content);
+            else if(page === 'guide') renderGuide(content);
+            else if(page === 'wallet') renderWallet(content);
+            else if(page === 'lists') renderLists(content);
+            else if(page === 'info') renderInfo(content);
+        }
+
+        // --- PAGE: PLAN ---
+        function renderPlan(el) {
+            let html = `
+                <div class="mb-6 flight-card text-white p-5 rounded-[2rem] shadow-xl flex items-center justify-between">
+                    <div>
+                        <p class="text-[9px] text-gold tracking-widest uppercase font-bold">Flight Status</p>
+                        <p class="text-xs font-bold mt-1">IT200 (Mar 8) • 10:35 ARR</p>
+                        <p class="text-xs font-bold text-gold">IT203 (Mar 14) • 18:30 DEP</p>
+                    </div>
+                    <i class="fa-solid fa-plane-departure text-gold/30 text-3xl"></i>
+                </div>
+            `;
+            itinerary.forEach(day => {
+                html += `
+                <div class="mb-10 relative border-l-2 border-champagne ml-4 pl-6">
+                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-gold shadow-md border-2 border-white"></div>
+                    <h2 class="font-serif text-xl font-bold text-luxury mb-1">${day.day} <span class="text-gold font-sans text-xs ml-2">${day.date}</span></h2>
+                    <p class="text-[9px] text-gray-400 mb-4 uppercase tracking-[0.2em] font-bold">STAY: ${day.stay}</p>
+                    <div class="grid gap-4">
+                        ${day.items.map(item => `
+                            <div class="glass-card p-4 rounded-2xl ${item.isFlight ? 'bg-luxury/5 border-luxury/10' : ''} ${item.highlight ? 'border-l-4 border-l-gold bg-gold/5' : ''}">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="text-[9px] px-2 py-0.5 rounded-full ${item.isFlight ? 'bg-luxury text-white' : 'bg-champagne text-gold'} font-bold uppercase">${item.type}</span>
+                                    <span class="text-[10px] text-gray-400 font-bold">${item.time}</span>
+                                </div>
+                                <h3 class="font-bold text-gray-800 text-sm mb-3">${item.name}</h3>
+                                <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.addr)}" target="_blank" class="inline-flex items-center text-[9px] bg-white border border-gray-100 px-3 py-1.5 rounded-lg font-bold text-gray-500 shadow-sm active:scale-95 transition">
+                                    <i class="fa-solid fa-location-arrow text-gold mr-1.5"></i> Google Maps
+                                </a>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+            });
+            el.innerHTML = html;
+        }
+
+        // --- PAGE: GUIDE ---
+        function renderGuide(el) {
+            const guides = [
+                {
+                    name: "河口淺間神社 (天空鳥居)",
+                    img: "https://images.unsplash.com/photo-1570459027562-4a916cc617e8?auto=format&fit=crop&w=800",
+                    desc: "IG 熱門攝影點。建於西元 865 年。穿過千年七本杉後，需沿山路步行 15 分鐘抵達遙拜所。這座鳥居是為了對抗富士山噴火而建，神聖非凡。早晨 9:00 前抵達可避開 Threads 網友提到的排隊人龍。"
+                },
+                {
+                    name: "鳴澤氷穴 & 富岳風穴",
+                    img: "https://images.unsplash.com/photo-1518118014470-87a407335607?auto=format&fit=crop&w=800",
+                    desc: "由富士山熔岩形成的天然隧道。氷穴內全年 0 度，保存著江戶時代的冰柱。內部天花板極低（僅 90cm），需戴頭盔進入，極具探險感。它是 YouTube 上極推的河口湖自然景觀第一名。"
+                },
+                {
+                    name: "淺草寺 / 雷門",
+                    img: "https://images.unsplash.com/photo-1583212292454-1fe6229603b7?auto=format&fit=crop&w=800",
+                    desc: "東京下町之魂。雷門燈籠代表守護。仲見世商店街已有數百年歷史，推薦嘗試木村家的人形燒。淺草神社位於寺廟旁，祭祀發現觀音像的漁夫。此處也是 IG 上日落後點燈拍照的最佳位置。"
+                },
+                {
+                    name: "音樂盒之森美術館",
+                    img: "https://images.unsplash.com/photo-1514483127413-f72f273478c3?auto=format&fit=crop&w=800",
+                    desc: "日本小歐洲。館內藏有預計裝載於鐵達尼號上的巨大自動管風琴。其法式庭園正對富士山，光線在下午 2:00-4:00 之間最美，是極致的歐式優雅體驗。"
+                }
+            ];
+            
+            el.innerHTML = `
+                <div class="space-y-12 pb-20">
+                    <div class="text-center py-6 border-b border-champagne">
+                        <h2 class="font-serif italic text-3xl text-luxury mb-2">The Heritage Guide</h2>
+                        <p class="text-[10px] tracking-[0.3em] text-gold uppercase font-bold">深度文化情報</p>
+                    </div>
+                    ${guides.map(g => `
+                        <section class="space-y-4">
+                            <div class="h-64 rounded-[2.5rem] overflow-hidden shadow-xl border border-champagne relative">
+                                <img src="${g.img}" class="w-full h-full" />
+                                <div class="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <h3 class="absolute bottom-6 left-6 font-serif text-xl italic text-white">${g.name}</h3>
+                            </div>
+                            <p class="text-[13px] text-gray-500 leading-relaxed font-medium px-2">${g.desc}</p>
+                            <div class="flex gap-2 px-2">
+                                <span class="text-[9px] bg-gold/10 text-gold px-3 py-1 rounded-full font-bold uppercase tracking-widest">#IG_Spot</span>
+                                <span class="text-[9px] bg-luxury/5 text-gray-400 px-3 py-1 rounded-full font-bold uppercase tracking-widest">#History</span>
+                            </div>
+                        </section>
+                    `).join('')}
+                </div>`;
+        }
+
+        // --- PAGE: WALLET ---
+        function renderWallet(el) {
+            const expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
+            el.innerHTML = `
+                <div class="space-y-6">
+                    <div class="gold-gradient p-6 rounded-[2.5rem] shadow-2xl text-white">
+                        <div class="flex justify-between mb-4 items-center">
+                            <p class="text-[9px] uppercase tracking-widest font-bold opacity-80">Smart Calculator</p>
+                            <div class="flex items-center text-[10px] font-bold">
+                                Rate: <input id="rate-input" type="number" step="0.001" value="${JPY_RATE}" onchange="updateRate(this.value)" class="bg-transparent border-b border-white/30 w-10 ml-1 text-center outline-none">
+                            </div>
+                        </div>
+                        <input id="calc-input" type="text" placeholder="500 + 1200 * 2" class="w-full bg-white/20 border-none text-3xl font-bold placeholder:text-white/40 focus:ring-0 rounded-2xl p-4 mb-4 text-white outline-none shadow-inner">
+                        <div class="flex justify-between items-end px-2">
+                            <button onclick="calculate()" class="bg-white text-gold font-bold px-8 py-3 rounded-full shadow-lg text-xs tracking-widest active:scale-95 transition">EQUALS</button>
+                            <div class="text-right">
+                                <p id="calc-jpy" class="text-3xl font-serif">¥ 0</p>
+                                <p id="calc-twd" class="text-[10px] opacity-70 font-bold tracking-widest">≈ NT$ 0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-[2.5rem] border-gold/20">
+                        <h3 class="font-bold mb-4 text-gold text-[10px] tracking-[0.2em] uppercase">Expense Entry</h3>
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <input id="exp-name" type="text" placeholder="Item" class="bg-gray-50 border-none rounded-xl p-3 text-sm focus:ring-1 focus:ring-gold outline-none">
+                            <input id="exp-amount" type="number" placeholder="¥ Amount" class="bg-gray-50 border-none rounded-xl p-3 text-sm focus:ring-1 focus:ring-gold outline-none">
+                        </div>
+                        <div class="flex gap-2">
+                            <label class="flex-1 bg-champagne text-gold py-3 rounded-xl text-center text-[10px] font-bold cursor-pointer active:scale-95 transition">
+                                <i class="fa-solid fa-camera mr-1"></i> PHOTO
+                                <input type="file" accept="image/*" class="hidden" onchange="handleImage(this)">
+                            </label>
+                            <button onclick="saveExpense()" class="flex-1 bg-luxury text-white py-3 rounded-xl text-[10px] font-bold tracking-widest shadow-lg active:scale-95 transition">SAVE</button>
+                        </div>
+                        <div id="image-preview" class="mt-4 hidden"><img id="temp-img" class="h-16 w-16 rounded-lg border border-gold"></div>
+                    </div>
+
+                    <div id="expense-list" class="space-y-3 pb-20">
+                        ${expenses.map((h, i) => `
+                            <div class="flex items-center bg-white p-3 rounded-2xl shadow-sm border border-gray-50">
+                                ${h.img ? `<img src="${h.img}" class="w-12 h-12 rounded-xl mr-3">` : `<div class="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center mr-3 text-gray-300"><i class="fa-solid fa-receipt"></i></div>`}
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs font-bold text-gray-800 truncate">${h.name}</p>
+                                    <p class="text-[9px] text-gray-400 font-bold">${h.date}</p>
+                                </div>
+                                <div class="text-right px-4 border-r border-platinum">
+                                    <p class="text-sm font-serif font-bold text-gold">¥${h.jpy.toLocaleString()}</p>
+                                    <p class="text-[9px] text-gray-400 font-bold">NT$${Math.round(h.jpy * JPY_RATE).toLocaleString()}</p>
+                                </div>
+                                <button onclick="deleteExpense(${i})" class="pl-4 text-gray-200 active:text-red-400"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+                        `).reverse().join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- PAGE: LISTS ---
+        function renderLists(el) {
+            const checks = ["護照正本/日文譯本", "Visit Japan Web QR", "Tigerair IT200 登機證", "ETC 租車確認信", "保暖衣物/暖暖包", "常用常備藥物"];
+            const memo = localStorage.getItem('user_memo') || "";
+            const links = (memo.match(/(https?:\/\/[^\s]+)/g) || []);
+
+            el.innerHTML = `
+                <div class="space-y-8">
+                    <section>
+                        <h3 class="font-serif text-2xl italic mb-5 text-gold border-b border-champagne pb-2">Travel Checklist</h3>
+                        <div class="glass-card rounded-[2.5rem] p-5 space-y-1">
+                            ${checks.map(item => `
+                                <label class="flex items-center p-3 hover:bg-gold/5 rounded-2xl transition cursor-pointer group">
+                                    <input type="checkbox" class="w-5 h-5 rounded border-champagne text-gold focus:ring-gold mr-4 transition">
+                                    <span class="text-sm font-medium text-gray-700 group-hover:text-gold">${item}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </section>
+                    <section class="pb-20">
+                        <h3 class="font-serif text-2xl italic mb-5 text-gold border-b border-champagne pb-2">Smart Memo</h3>
+                        <textarea id="memo-area" oninput="saveMemo(this.value)" placeholder="貼上 Google Maps 網址或購物清單..." class="w-full h-48 bg-white border border-champagne rounded-[2.5rem] p-6 text-sm shadow-inner focus:ring-2 focus:ring-gold/20 outline-none transition">${memo}</textarea>
+                        ${links.length > 0 ? `
+                            <div class="mt-4 flex flex-wrap gap-2">
+                                ${links.map(url => `<a href="${url}" target="_blank" class="bg-gold/10 text-gold px-4 py-2 rounded-full text-[10px] font-bold border border-gold/20 shadow-sm"><i class="fa-solid fa-link mr-1"></i> OPEN URL</a>`).join('')}
+                            </div>
+                        ` : ''}
+                    </section>
+                </div>
+            `;
+        }
+
+        // --- PAGE: INFO ---
+        function renderInfo(el) {
+            el.innerHTML = `
+                <div class="space-y-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <a href="https://www.jma.go.jp/jma/index.html" target="_blank" class="bg-white p-6 rounded-[2.5rem] flex flex-col items-center border border-champagne shadow-sm active:scale-95 transition">
+                            <i class="fa-solid fa-cloud-sun text-2xl mb-2 text-blue-400"></i>
+                            <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Weather Info</span>
+                        </a>
+                        <a href="tel:110" class="bg-red-50 p-6 rounded-[2.5rem] flex flex-col items-center border border-red-100 shadow-sm active:scale-95 transition">
+                            <i class="fa-solid fa-phone-flip text-2xl mb-2 text-red-500"></i>
+                            <span class="text-[10px] font-bold text-red-500 uppercase tracking-widest">Help 110</span>
+                        </a>
+                    </div>
+                    
+                    <div class="glass-card p-6 rounded-[2.5rem] border-red-100 shadow-sm">
+                        <h4 class="text-xs font-bold text-red-600 mb-4 uppercase tracking-widest flex items-center"><i class="fa-solid fa-circle-exclamation mr-2"></i> 緊急聯絡</h4>
+                        <div class="space-y-3 text-[11px] font-bold text-gray-600">
+                            <div class="flex justify-between border-b border-gray-50 pb-2"><span>救護車 / 消防車</span><span>119</span></div>
+                            <div class="flex justify-between border-b border-gray-50 pb-2"><span>駐日代表處 (東京)</span><span>03-3280-7811</span></div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-[2.5rem] shadow-sm">
+                        <h4 class="text-xs font-bold text-gold mb-4 uppercase tracking-widest">旅遊守則</h4>
+                        <ul class="space-y-4 text-[11px] text-gray-500 font-bold leading-relaxed">
+                            <li class="flex items-start"><i class="fa-solid fa-check text-green-500 mr-2 mt-0.5"></i> 進入神社先在水手舍淨手。</li>
+                            <li class="flex items-start"><i class="fa-solid fa-check text-green-500 mr-2 mt-0.5"></i> 電車內嚴禁通話，手機請轉靜音。</li>
+                            <li class="flex items-start"><i class="fa-solid fa-xmark text-red-400 mr-2 mt-0.5"></i> 禁止攜帶含肉類、蔬菜、水果入境日本。</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- UTILS ---
+        function calculate() {
+            const input = document.getElementById('calc-input').value;
+            try {
+                const result = new Function(`return ${input}`)();
+                document.getElementById('calc-jpy').innerText = `¥ ${Math.round(result).toLocaleString()}`;
+                document.getElementById('calc-twd').innerText = `≈ NT$ ${Math.round(result * JPY_RATE).toLocaleString()}`;
+            } catch (e) { alert("計算錯誤"); }
+        }
+
+        function updateRate(val) {
+            JPY_RATE = parseFloat(val);
+            localStorage.setItem('jpy_rate', JPY_RATE);
+            renderWallet(document.getElementById('app-content'));
+        }
+
+        let tempImageBase64 = null;
+        function handleImage(input) {
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const max = 300;
+                    const scale = max / Math.max(img.width, img.height);
+                    canvas.width = img.width * scale;
+                    canvas.height = img.height * scale;
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    tempImageBase64 = canvas.toDataURL('image/jpeg', 0.6);
+                    document.getElementById('temp-img').src = tempImageBase64;
+                    document.getElementById('image-preview').classList.remove('hidden');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveExpense() {
+            const name = document.getElementById('exp-name').value;
+            const jpy = document.getElementById('exp-amount').value;
+            if (!name || !jpy) return;
+            const expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
+            expenses.push({
+                name, jpy: parseFloat(jpy), img: tempImageBase64,
+                date: new Date().toLocaleDateString('zh-TW', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})
+            });
+            localStorage.setItem('expenses', JSON.stringify(expenses));
+            tempImageBase64 = null;
+            renderWallet(document.getElementById('app-content'));
+        }
+
+        function deleteExpense(i) {
+            if(!confirm("確定刪除此紀錄？")) return;
+            const expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
+            expenses.splice(i, 1);
+            localStorage.setItem('expenses', JSON.stringify(expenses));
+            renderWallet(document.getElementById('app-content'));
+        }
+
+        function saveMemo(val) {
+            localStorage.setItem('user_memo', val);
+            // Throttle rendering for link buttons
+            clearTimeout(window.memoTimer);
+            window.memoTimer = setTimeout(() => renderLists(document.getElementById('app-content')), 1500);
+        }
+
+        window.onload = () => renderPage('plan');
+    </script>
+</body>
+</html>
