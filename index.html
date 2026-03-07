@@ -71,55 +71,57 @@
         let JPY_RATE = parseFloat(localStorage.getItem('jpy_rate')) || 0.21;
         
         const itinerary = [
-            { day: "Day 1", date: "3/8", title: "抵達 & 河口湖自駕", stay: "Hanz Outdoor Resort", items: [
-                { type: "航班", name: "虎航 IT200 (10:35 抵達)", time: "Arrival", addr: "1-1 Furugome, Narita", isFlight: true },
-                { type: "休憩", name: "海老名服務區 (下行)", time: "Stopover", addr: "5 Chome-2-1 Oyaminami, Ebina" },
-                { type: "休憩", name: "富士川 SA (下行) Starbucks", time: "Coffee", addr: "1348-3 Iwabuchi, Fuji" },
-                { type: "補給", name: "Ogino 河口湖店", time: "Grocery", addr: "545ｰ3 Funatsu, Fujikawaguchiko" },
-                { type: "室內", name: "河口湖美術館", time: "musim", addr: "3170 Kawaguchi, Fujikawaguchiko, Yamanashi 401-0304" },
-                { type: "住宿", name: "Hanz Outdoor Resort", time: "Check-in", addr: "3297-1 Katsuyama, Fujikawaguchiko" }
-            ]},
-            { day: "Day 2", date: "3/9", title: "神玉巡拜 & 天空鳥居", stay: "Hanz Outdoor Resort", items: [
-                { type: "神社", name: "河口淺間神社", time: "40m", addr: "1 Kawaguchi, Fujikawaguchiko", highlight: true },
-                { type: "絕景", name: "天空の鳥居 Tenku no Torii", time: "75m", addr: "1 Kawaguchi, Fujikawaguchiko" },
-                { type: "神社", name: "富士御室淺間神社", time: "30m", addr: "3951 Katsuyama, Fujikawaguchiko" },
-                { type: "絕景", name: "楓葉迴廊", time: "30m", addr: " Kawaguchi, Fujikawaguchiko, Yamanashi 401-0304" },
-                { type: "神社", name: "冨士山小御嶽神社", time: "30m", addr: "Fuji Subaru Line 5th Station" }
-            ]},
-            { day: "Day 3", date: "3/10", title: "商店街 & 美術館", stay: "Hanz Outdoor Resort", items: [
-                { type: "公園", name: "新倉山浅間公園", time: "60m", addr: " 2-4-1 Asama, Fujiyoshida, Yamanashi 403-0011, Japan" },
-                { type: "神社", name: "新倉富士浅間神社", time: "30m", addr: "2-4-1 Asama, Fujiyoshida, Yamanashi 403-0031, Japan" }
-                { type: "商圈", name: "富士吉田懷舊商店街", time: "90m", addr: " 3-14 Shimoyoshida, Fujiyoshida, Yamanashi 403-0004, Japan" },
-                { type: "神社", name: "北口本宮冨士浅間神社", time: "90m", addr: "5558 Kamiyoshida, Fujiyoshida, Yamanashi 403-0005, Japan", highlight: true },
-                { type: "咖啡", name: "LAKE BAKE", time: "45m", addr: "2585-85 Oishi, Fujikawaguchiko" }
-                { type: "神社", name: "小室浅間神社", time: "45m", addr: "3-32-18 Shimoyoshida, Fujiyoshida, Yamanashi 403-0004, Japan" }
-            ]},
-            { day: "Day 4", date: "3/11", title: "湖畔藝術日", stay: "時悠悠樂游", items: [
-                { type: "景觀", name: "西湖いやしの里 根場", time: "60m", addr: "西湖, Fujikawaguchiko, Yamanashi 401-0332, Japan" },
-                { type: "奇景", name: "富岳風穴", time: "45m", addr: "2068-1 Saiko, Fujikawaguchiko" },
-                { type: "奇景", name: "鳴澤氷穴", time: "60m", addr: "8533 Narusawa, Yamanashi", highlight: true },
-                { type: "景觀", name: "忍野八海", time: "45m", addr: "Shibokusa, Oshino, Yamanashi 401-0511" },
-                { type: "景觀", name: "平野之濱", time: "45m", addr: "13 Hirano, Yamanakako, Yamanashi 401-0502, Japan" },
-                { type: "名物", name: "FUJIYAMA COOKIE", time: "45m", addr: "1165-1 Azagawa, Fujikawaguchiko" }
-                { type: "住宿", name: "時悠悠樂游", time: "Check-in", addr: "186-1 Asakawa, Fujikawaguchiko" }
-            ]},
-            { day: "Day 5", date: "3/12", title: "地底探險 & 公園", stay: "時悠悠樂游", items: [
-                { type: "景觀", name: "白糸の滝", time: "60m", addr: "273-1 Kamiide, Fujinomiya, Shizuoka 418-0103, Japan" },
-                { type: "神社", name: "人穴浅間神社", time: "45m", addr: "206 Hitoana, Fujinomiya, Shizuoka 418-0102, Japan" },
-                { type: "咖啡", name: "金山テラス", time: "60m", addr: "155-13 Fumoto, Fujinomiya, Shizuoka 418-0109, Japan", highlight: true },
-                { type: "名物", name: "三大財運神社 新屋山神社", time: "45m", addr: "4-2-2 Araya, Fujiyoshida, Yamanashi 403-0006, Japan" }
-            ]},
-            { day: "Day 6", date: "3/13", title: "淺草下町風情", stay: "APA Hotel Asakusa", items: [
-                { type: "文化", name: "雷門 / 淺草寺 / 仲見世通", time: "120m", addr: "2-3-1 Asakusa, Taito City" },
-                { type: "景點", name: "墨田北齋美術館", time: "60m", addr: "2-7-2 Kamezawa, Sumida" },
-                { type: "地標", name: "東京晴空塔", time: "90m", addr: "1 Chome-1-2 Oshiage, Sumida" },
-                { type: "晚餐", name: "Chinya 壽喜燒", time: "90m", addr: "2-16-1 Hanakawado", highlight: true }
-            ]},
-            { day: "Day 7", date: "3/14", title: "東京車站 & 返程", stay: "Home", items: [
-                { type: "地標", name: "東京車站 (丸之內)", time: "90m", addr: "1 Chome Marunouchi, Chiyoda" },
-                { type: "航班", name: "虎航 IT203 (18:30 起飛)", time: "Return", addr: "1-1 Furugome, Narita", isFlight: true }
-            ]}
-        ];
+            const itinerary = [
+    { day: "Day 1", date: "3/8", title: "抵達 & 河口湖自駕", stay: "Hanz Outdoor Resort", items: [
+        { type: "航班", name: "虎航 IT200 (10:35 抵達)", time: "Arrival", addr: "1-1 Furugome, Narita", isFlight: true },
+        { type: "休憩", name: "海老名服務區 (下行)", time: "Stopover", addr: "5 Chome-2-1 Oyaminami, Ebina" },
+        { type: "休憩", name: "富士川 SA (下行) Starbucks", time: "Coffee", addr: "1348-3 Iwabuchi, Fuji" },
+        { type: "補給", name: "Ogino 河口湖店", time: "Grocery", addr: "545ｰ3 Funatsu, Fujikawaguchiko" },
+        { type: "室內", name: "河口湖美術館", time: "60m", addr: "3170 Kawaguchi, Fujikawaguchiko, Yamanashi 401-0304" },
+        { type: "住宿", name: "Hanz Outdoor Resort", time: "Check-in", addr: "3297-1 Katsuyama, Fujikawaguchiko" }
+    ]},
+    { day: "Day 2", date: "3/9", title: "神玉巡拜 & 天空鳥居", stay: "Hanz Outdoor Resort", items: [
+        { type: "神社", name: "河口淺間神社", time: "40m", addr: "1 Kawaguchi, Fujikawaguchiko", highlight: true },
+        { type: "絕景", name: "天空の鳥居 Tenku no Torii", time: "75m", addr: "1 Kawaguchi, Fujikawaguchiko" },
+        { type: "神社", name: "富士御室淺間神社", time: "30m", addr: "3951 Katsuyama, Fujikawaguchiko" },
+        { type: "絕景", name: "楓葉迴廊", time: "30m", addr: " Kawaguchi, Fujikawaguchiko, Yamanashi 401-0304" },
+        { type: "神社", name: "冨士山小御嶽神社", time: "30m", addr: "Fuji Subaru Line 5th Station" }
+    ]},
+    { day: "Day 3", date: "3/10", title: "商店街 & 美術館", stay: "Hanz Outdoor Resort", items: [
+        { type: "公園", name: "新倉山浅間公園", time: "60m", addr: " 2-4-1 Asama, Fujiyoshida, Yamanashi 403-0011, Japan" },
+        { type: "神社", name: "新倉富士浅間神社", time: "30m", addr: "2-4-1 Asama, Fujiyoshida, Yamanashi 403-0031, Japan" }, // 加了逗號
+        { type: "商圈", name: "富士吉田懷舊商店街", time: "90m", addr: " 3-14 Shimoyoshida, Fujiyoshida, Yamanashi 403-0004, Japan" },
+        { type: "神社", name: "北口本宮冨士浅間神社", time: "90m", addr: "5558 Kamiyoshida, Fujiyoshida, Yamanashi 403-0005, Japan", highlight: true },
+        { type: "咖啡", name: "LAKE BAKE", time: "45m", addr: "2585-85 Oishi, Fujikawaguchiko" }, // 加了逗號
+        { type: "神社", name: "小室浅間神社", time: "45m", addr: "3-32-18 Shimoyoshida, Fujiyoshida, Yamanashi 403-0004, Japan" }
+    ]},
+    { day: "Day 4", date: "3/11", title: "湖畔藝術日", stay: "時悠悠樂游", items: [
+        { type: "景觀", name: "西湖いやしの里 根場", time: "60m", addr: "西湖, Fujikawaguchiko, Yamanashi 401-0332, Japan" },
+        { type: "奇景", name: "富岳風穴", time: "45m", addr: "2068-1 Saiko, Fujikawaguchiko" },
+        { type: "奇景", name: "鳴澤氷穴", time: "60m", addr: "8533 Narusawa, Yamanashi", highlight: true },
+        { type: "景觀", name: "忍野八海", time: "45m", addr: "Shibokusa, Oshino, Yamanashi 401-0511" },
+        { type: "景觀", name: "平野之濱", time: "45m", addr: "13 Hirano, Yamanakako, Yamanashi 401-0502, Japan" },
+        { type: "名物", name: "FUJIYAMA COOKIE", time: "45m", addr: "1165-1 Azagawa, Fujikawaguchiko" }, // 加了逗號
+        { type: "住宿", name: "時悠悠樂游", time: "Check-in", addr: "186-1 Asakawa, Fujikawaguchiko" }
+    ]},
+    { day: "Day 5", date: "3/12", title: "地底探險 & 公園", stay: "時悠悠樂游", items: [
+        { type: "景觀", name: "白糸の滝", time: "60m", addr: "273-1 Kamiide, Fujinomiya, Shizuoka 418-0103, Japan" },
+        { type: "神社", name: "人穴浅間神社", time: "45m", addr: "206 Hitoana, Fujinomiya, Shizuoka 418-0102, Japan" },
+        { type: "咖啡", name: "金山テラス", time: "60m", addr: "155-13 Fumoto, Fujinomiya, Shizuoka 418-0109, Japan", highlight: true },
+        { type: "名物", name: "三大財運神社 新屋山神社", time: "45m", addr: "4-2-2 Araya, Fujiyoshida, Yamanashi 403-0006, Japan" }
+    ]},
+    { day: "Day 6", date: "3/13", title: "淺草下町風情", stay: "APA Hotel Asakusa", items: [
+        { type: "文化", name: "雷門 / 淺草寺 / 仲見世通", time: "120m", addr: "2-3-1 Asakusa, Taito City" },
+        { type: "景點", name: "墨田北齋美術館", time: "60m", addr: "2-7-2 Kamezawa, Sumida" },
+        { type: "地標", name: "東京晴空塔", time: "90m", addr: "1 Chome-1-2 Oshiage, Sumida" },
+        { type: "晚餐", name: "Chinya 壽喜燒", time: "90m", addr: "2-16-1 Hanakawado", highlight: true }
+    ]},
+    { day: "Day 7", date: "3/14", title: "東京車站 & 返程", stay: "Home", items: [
+        { type: "地標", name: "東京車站 (丸之內)", time: "90m", addr: "1 Chome Marunouchi, Chiyoda" },
+        { type: "航班", name: "虎航 IT203 (18:30 起飛)", time: "Return", addr: "1-1 Furugome, Narita", isFlight: true }
+    ]}
+];
+
 
         // --- CORE NAVIGATION ---
         function renderPage(page) {
