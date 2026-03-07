@@ -33,7 +33,7 @@
     <header class="sticky top-0 z-[60] bg-white/95 backdrop-blur-md border-b border-champagne px-6 py-4 flex justify-between items-center shadow-sm">
         <div>
             <h1 class="font-serif italic text-2xl font-bold tracking-widest text-gold">Japan 2026</h1>
-            <p class="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-bold">Personal Concierge v3.5 Full</p>
+            <p class="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-bold">Personal Concierge v4 Full</p>
         </div>
         <div class="text-right">
             <span class="text-xs font-bold block">03/08 - 03/14</span>
@@ -301,7 +301,7 @@
 
         // --- PAGE: LISTS ---
         function renderLists(el) {
-            const checks = ["護照正本/日文譯本", "Visit Japan Web QR", "Tigerair IT200 登機證", "ETC 租車確認信", "保暖衣物/暖暖包", "常用常備藥物"];
+            const checks = ["護照正本","駕照/日文譯本", "Visit Japan Web QR", "Tigerair IT200 登機證", "ETC 租車確認信", "保暖衣物/暖暖包", "常用常備藥物", "充電器/行充", "一顆開心的心 <3" ];
             const memo = localStorage.getItem('user_memo') || "";
             const links = (memo.match(/(https?:\/\/[^\s]+)/g) || []);
 
